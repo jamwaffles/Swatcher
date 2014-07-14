@@ -9,7 +9,7 @@ namespace Swatcher
 		[STAThread]
 		public static void Main (string[] args)
 		{
-			Mat src = new Mat("TestImages/07G28_NIV.jpg", LoadMode.Color);
+			Mat src = new Mat("TestImages/2013-12-27-09G37_TRB.jpg", LoadMode.Color);
 
 			src = src.Resize (new Size (420, 625));
 
@@ -24,6 +24,14 @@ namespace Swatcher
 
 			Cv2.FindContours (thresh, out contours, out hierarchy, ContourRetrieval.Tree, ContourChain.ApproxSimple);
 
+			// Find center of mass in contour
+			Moments center = Cv2.Moments (contours [0]);
+
+			// Convert moment matrix to X/Y coords
+			int x = (int) (center.M10 / center.M00);
+			int y = (int) (center.M01 / center.M00);
+
+			src.Circle (new Point (x, y), 5, CvColor.CornflowerBlue, 2);
 			src.DrawContours (contours, 1, CvColor.Green, 2);
 
 			using (var orig = new Window ("src image", src)) 
