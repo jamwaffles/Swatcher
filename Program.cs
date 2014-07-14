@@ -9,22 +9,24 @@ namespace Swatcher
 		[STAThread]
 		public static void Main (string[] args)
 		{
-			Mat src = new Mat("TestImages/07G28_NIV.jpg", LoadMode.GrayScale);
+			Mat src = new Mat("TestImages/07G28_NIV.jpg", LoadMode.Color);
+
+			src = src.Resize (new Size (420, 625));
+
+			Mat srcGrey = src.CvtColor(ColorConversion.BgrToGray);
 			Mat dst = new Mat ();
 			Point[][] contours;
-
-			Mat srcCopy = src.Clone ();
-
+			Mat invertColour = new Mat (src.Rows, src.Cols, src.Type(), new Scalar(255, 255, 255) );
 			HiearchyIndex[] hierarchy;
+			Mat contoursLines = new Mat(src.Rows, src.Cols, src.Type());
+		
+			Mat thresh = srcGrey.Threshold (230, 255, ThresholdType.Binary);
 
-			Cv2.FindContours (srcCopy, out contours, out hierarchy, ContourRetrieval.FloodFill, ContourChain.ApproxSimple);
+			Cv2.FindContours (thresh, out contours, out hierarchy, ContourRetrieval.Tree, ContourChain.ApproxSimple);
 
-			Mat contoursLines = new Mat(1105, 1105, MatType.CV_8UC3);
+			src.DrawContours (contours, 1, CvColor.Green, 2);
 
-			Cv2.DrawContours(contoursLines, contours, 0, CvColor.Green, 1, (LineType)8, hierarchy, 100, new Point(0, 0));
-
-			using (new Window ("src image", src)) 
-			using (new Window("dst image", contoursLines)) 
+			using (var orig = new Window ("src image", src)) 
 			{
 				Cv2.WaitKey();
 			}
