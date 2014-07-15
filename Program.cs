@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenCvSharp;
 using OpenCvSharp.CPlusPlus;
+using ClipperLib;
 
 namespace Swatcher
 {
@@ -20,8 +21,9 @@ namespace Swatcher
 			HiearchyIndex[] hierarchy;
 			Mat contoursLines = new Mat(src.Rows, src.Cols, src.Type());
 		
-			InputArray element = Cv2.GetStructuringElement (StructuringElementShape.Ellipse, new Size (16, 16));
-			Mat thresh = srcGrey.Threshold (230, 255, ThresholdType.Binary).Dilate(element);
+//			InputArray element = Cv2.GetStructuringElement (StructuringElementShape.Ellipse, new Size (16, 16));
+//			Mat thresh = srcGrey.Threshold (230, 255, ThresholdType.Binary).Dilate(element);
+			Mat thresh = srcGrey.Threshold (230, 255, ThresholdType.Binary);
 
 			Cv2.FindContours (thresh, out contours, out hierarchy, ContourRetrieval.Tree, ContourChain.ApproxSimple);
 
