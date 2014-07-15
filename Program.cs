@@ -20,7 +20,8 @@ namespace Swatcher
 			HiearchyIndex[] hierarchy;
 			Mat contoursLines = new Mat(src.Rows, src.Cols, src.Type());
 		
-			Mat thresh = srcGrey.Threshold (230, 255, ThresholdType.Binary);
+			InputArray element = Cv2.GetStructuringElement (StructuringElementShape.Ellipse, new Size (16, 16));
+			Mat thresh = srcGrey.Threshold (230, 255, ThresholdType.Binary).Dilate(element);
 
 			Cv2.FindContours (thresh, out contours, out hierarchy, ContourRetrieval.Tree, ContourChain.ApproxSimple);
 
